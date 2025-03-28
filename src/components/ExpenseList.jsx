@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from "react"
 import getSupabaseBrowserClient from "@/lib/supabaseClient"
 import { toast } from "sonner"
 import { Edit, Trash2, PlusCircle } from "lucide-react"
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 
 import { Button } from "@/components/ui/button"
 import { ExpenseForm } from "@/components/ExpenseForm"
@@ -116,32 +116,35 @@ export function ExpenseList({ onDataChanged }) {
           <p>Loading expenses...</p>
         ) : expenseList.length > 0 ? (
           <DataTable headers={["Date", "Description", "Amount", "Actions"]}>
-            {expenseList.map((expense) => (
-              <TableRow key={expense.id}>
-                <TableCell>{format(new Date(expense.date), "PPP")}</TableCell>
-                <TableCell>{expense.description}</TableCell>
-                <TableCell>{formatCurrency(expense.amount)}</TableCell>
-                <TableCell className="text-right">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleEditExpense(expense)}
-                    className="mr-2"
-                    aria-label="Edit Expense"
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleDeleteExpense(expense.id)}
-                    aria-label="Delete Expense"
-                  >
-                    <Trash2 className="h-4 w-4 text-destructive" />
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
+            {expenseList.map((expense) => {
+              const displayDate = parseISO(expense.date)
+              return (
+                <TableRow key={expense.id}>
+                  <TableCell>{format(displayDate, "PPP")}</TableCell>
+                  <TableCell>{expense.description}</TableCell>
+                  <TableCell>{formatCurrency(expense.amount)}</TableCell>
+                  <TableCell className="text-right">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleEditExpense(expense)}
+                      className="mr-2"
+                      aria-label="Edit Expense"
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleDeleteExpense(expense.id)}
+                      aria-label="Delete Expense"
+                    >
+                      <Trash2 className="h-4 w-4 text-destructive" />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              )
+            })}
           </DataTable>
         ) : (
           <p>No expense records found. Add your first expense record!</p>

@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from "react"
 import getSupabaseBrowserClient from "@/lib/supabaseClient"
 import { toast } from "sonner"
 import { Edit, Trash2, PlusCircle } from "lucide-react"
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 
 import { Button } from "@/components/ui/button"
 import { IncomeForm } from "@/components/IncomeForm"
@@ -125,37 +125,41 @@ export function IncomeList({ clients, onDataChanged }) {
           <DataTable
             headers={["Date", "Description", "Client", "Amount", "Actions"]}
           >
-            {incomeList.map((income) => (
-              <TableRow key={income.id}>
-                <TableCell>{format(new Date(income.date), "PPP")}</TableCell>
-                <TableCell>{income.description || "-"}</TableCell>
-                <TableCell>
-                  {income.client_id
-                    ? clientMap[income.client_id] || "Unknown Client"
-                    : "-"}
-                </TableCell>
-                <TableCell>{formatCurrency(income.amount)}</TableCell>
-                <TableCell className="text-right">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleEditIncome(income)}
-                    className="mr-2"
-                    aria-label="Edit Income"
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleDeleteIncome(income.id)}
-                    aria-label="Delete Income"
-                  >
-                    <Trash2 className="h-4 w-4 text-destructive" />
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
+            {incomeList.map((income) => {
+              // Use parseISO directly
+              const displayDate = parseISO(income.date)
+              return (
+                <TableRow key={income.id}>
+                  <TableCell>{format(displayDate, "PPP")}</TableCell>
+                  <TableCell>{income.description || "-"}</TableCell>
+                  <TableCell>
+                    {income.client_id
+                      ? clientMap[income.client_id] || "Unknown Client"
+                      : "-"}
+                  </TableCell>
+                  <TableCell>{formatCurrency(income.amount)}</TableCell>
+                  <TableCell className="text-right">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleEditIncome(income)}
+                      className="mr-2"
+                      aria-label="Edit Income"
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleDeleteIncome(income.id)}
+                      aria-label="Delete Income"
+                    >
+                      <Trash2 className="h-4 w-4 text-destructive" />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              )
+            })}
           </DataTable>
         ) : (
           <p>No income records found. Add your first income record!</p>
