@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "node build-without-lint.js",
+    "build": "node fix-all-errors.js",
     "start": "next start",
     "lint": "echo 'ESLint disabled'"
   },
