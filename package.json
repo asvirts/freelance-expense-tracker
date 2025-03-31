@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "node fix-all-errors.js",
+    "build": "next build",
     "start": "next start",
-    "lint": "echo 'ESLint disabled'"
+    "lint": "next lint"
   },
   "dependencies": {
     "@hookform/resolvers": "^4.1.3",
